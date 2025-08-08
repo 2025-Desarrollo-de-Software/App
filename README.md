@@ -1,4 +1,4 @@
-# App
+# TripGo
 Repositorio de la aplicación integradora
 
 Nombre del proyecto.
