@@ -1,0 +1,17 @@
+﻿{
+  "applications": {
+    "TripGo.HttpApi.Host": {
+      "type": "dotnet-project",
+      "launchUrl": "https://localhost:44385",
+      "path": "../../../src/TripGo.HttpApi.Host/TripGo.HttpApi.Host.csproj",
+      "kubernetesService": ".*-httpapihost$"  
+    },
+    "TripGo.Angular": {
+      "type": "cli",
+      "workingDirectory": "../../../angular",
+      "startCommand": "./start.ps1",
+      "launchUrl": "http://localhost:4200",
+      "kubernetesService": ".*-angular$"        
+    }
+  }
+}
