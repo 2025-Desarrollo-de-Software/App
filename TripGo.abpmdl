@@ -1,0 +1,85 @@
+{
+  "template": "app",
+  "imports": {
+    "Volo.Abp.Account": {
+      "version": "8.2.2",
+      "isInstalled": true
+    },
+    "Volo.Abp.OpenIddict": {
+      "version": "8.2.2",
+      "isInstalled": true
+    },
+    "Volo.Abp.Identity": {
+      "version": "8.2.2",
+      "isInstalled": true
+    },
+    "Volo.Abp.TenantManagement": {
+      "version": "8.2.2",
+      "isInstalled": true
+    }
+  },
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "TripGo.Application": {
+      "path": "src/TripGo.Application/TripGo.Application.abppkg",
+      "folder": "src"
+    },
+    "TripGo.Application.Tests": {
+      "path": "test/TripGo.Application.Tests/TripGo.Application.Tests.abppkg",
+      "folder": "test"
+    },
+    "TripGo.Domain.Shared": {
+      "path": "src/TripGo.Domain.Shared/TripGo.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "TripGo.Application.Contracts": {
+      "path": "src/TripGo.Application.Contracts/TripGo.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "TripGo.HttpApi": {
+      "path": "src/TripGo.HttpApi/TripGo.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "TripGo.HttpApi.Client": {
+      "path": "src/TripGo.HttpApi.Client/TripGo.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "TripGo.EntityFrameworkCore.Tests": {
+      "path": "test/TripGo.EntityFrameworkCore.Tests/TripGo.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "TripGo.EntityFrameworkCore": {
+      "path": "src/TripGo.EntityFrameworkCore/TripGo.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "TripGo.TestBase": {
+      "path": "test/TripGo.TestBase/TripGo.TestBase.abppkg",
+      "folder": "test"
+    },
+    "TripGo.Domain.Tests": {
+      "path": "test/TripGo.Domain.Tests/TripGo.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "TripGo.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/TripGo.HttpApi.Client.ConsoleTestApp/TripGo.HttpApi.Client.ConsoleTestApp.abppkg",
+      "folder": "test"
+    },
+    "TripGo.DbMigrator": {
+      "path": "src/TripGo.DbMigrator/TripGo.DbMigrator.abppkg",
+      "folder": "src"
+    },
+    "TripGo.HttpApi.Host": {
+      "path": "src/TripGo.HttpApi.Host/TripGo.HttpApi.Host.abppkg",
+      "folder": "src"
+    },
+    "TripGo.Domain": {
+      "path": "src/TripGo.Domain/TripGo.Domain.abppkg",
+      "folder": "src"
+    }
+  }
+}
