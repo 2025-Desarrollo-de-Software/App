@@ -14,6 +14,7 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using TripGo.Destinations;
 
 namespace TripGo.EntityFrameworkCore;
 
@@ -26,7 +27,7 @@ public class TripGoDbContext :
     IIdentityDbContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
-
+    public DbSet<Destination> Destinations { get; set; }
 
     #region Entities from the modules
 
@@ -87,5 +88,17 @@ public class TripGoDbContext :
         //    b.ConfigureByConvention(); //auto configure for the base class props
         //    //...
         //});
+
+        builder.Entity<Destination >(b =>
+        {
+            b.ToTable(TripGoConsts.DbTablePrefix + "Destination", TripGoConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            b.Property(x => x.Nombre).IsRequired().HasMaxLength(128);
+            b.Property(x => x.Pais).IsRequired().HasMaxLength(128);
+            b.Property(x => x.Foto).IsRequired().HasMaxLength(512);
+            b.Property(x => x.Poblacion).IsRequired();
+            b.Property(x => x.Coordenadas).IsRequired().HasMaxLength(512);
+            b.Property(x => x.CantidadBusquedas).IsRequired();
+        });
     }
 }
