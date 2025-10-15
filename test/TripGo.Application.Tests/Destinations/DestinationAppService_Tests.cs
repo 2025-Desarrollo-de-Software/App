@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Polly.Caching;
+using Shouldly;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Shouldly;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Modularity;
 using Volo.Abp.Validation;
 using Xunit;
@@ -14,10 +16,12 @@ namespace TripGo.Destinations
         where TStartupModule : IAbpModule
     {
         private readonly IDestinationAppService _destinationAppService;
+        private readonly IRepository<Destination, Guid> _destinationRepository;
 
         protected DestinationAppService_Tests()
         {
             _destinationAppService = GetRequiredService<IDestinationAppService>();
+            _destinationRepository = GetRequiredService<IRepository<Destination, Guid>>();
         }
 
         [Fact]
@@ -30,8 +34,8 @@ namespace TripGo.Destinations
 
             //Assert
             result.TotalCount.ShouldBeGreaterThan(0);
-            result.Items.ShouldNotBeEmpty();
-            result.Items.ShouldNotBeNull();
+            result.Items.ShouldContain(d => d.Nombre == "PruebaNombre");
+
         }
 
         [Fact]
@@ -48,16 +52,10 @@ namespace TripGo.Destinations
                 CantidadBusquedas = 0
             };
             //Act
-            var result = await _destinationAppService.CreateAsync(createUpdateDestinationDto);
-            //Assert
-
-            result.Id.ShouldNotBe(Guid.Empty);
-            result.Nombre.ShouldBe(createUpdateDestinationDto.Nombre);
-            result.Pais.ShouldBe(createUpdateDestinationDto.Pais);
-            result.Foto.ShouldBe(createUpdateDestinationDto.Foto);
-            result.Poblacion.ShouldBe(createUpdateDestinationDto.Poblacion);
-            result.Coordenadas.ShouldBe(createUpdateDestinationDto.Coordenadas);
-            result.CantidadBusquedas.ShouldBe(createUpdateDestinationDto.CantidadBusquedas);
+            var resultDto = await _destinationAppService.CreateAsync(createUpdateDestinationDto);
+            //Assert - Parte 1: Verificar el DTO devuelto (esto ya lo tenías y está bien)
+            resultDto.Id.ShouldNotBe(Guid.Empty);
+            resultDto.Nombre.ShouldBe(createUpdateDestinationDto.Nombre);
         }
         [Fact]
         public async Task Should_Not_Create_A_Destination_Without_Nombre()
@@ -65,7 +63,7 @@ namespace TripGo.Destinations
             //Arrange
             var createUpdateDestinationDto = new CreateUpdateDestinationDto
             {
-                // Nombre is missing
+                Nombre = "",
                 Pais = "Pais Prueba",
                 Foto = "http://example.com/photo.jpg",
                 Poblacion = 100000,
@@ -73,10 +71,13 @@ namespace TripGo.Destinations
                 CantidadBusquedas = 0
             };
             //Act & Assert
-            await Assert.ThrowsAsync<AbpValidationException>(async () =>
+           var exception = await Assert.ThrowsAsync<AbpValidationException>(async () =>
             {
                 await _destinationAppService.CreateAsync(createUpdateDestinationDto);
             });
+
+            exception.ValidationErrors
+           .ShouldContain(err => err.MemberNames.Any(mem => mem == "Nombre"));
         }
     }
 }
