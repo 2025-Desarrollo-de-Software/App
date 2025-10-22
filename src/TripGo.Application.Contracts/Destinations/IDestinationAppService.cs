@@ -14,6 +14,8 @@ namespace TripGo.Destinations
         Guid, //Primary key of the destination entity
         PagedAndSortedResultRequestDto, //Used for paging/sorting
         CreateUpdateDestinationDto> //Used to create/update a destination
+
+  
     {
 
     }
