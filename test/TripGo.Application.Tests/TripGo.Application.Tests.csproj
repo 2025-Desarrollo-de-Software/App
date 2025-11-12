@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TripGo.Application\TripGo.Application.csproj" />
+    <ProjectReference Include="..\..\src\TripGo.EntityFrameworkCore\TripGo.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\TripGo.Domain.Tests\TripGo.Domain.Tests.csproj" />
   </ItemGroup>
 
