@@ -4,7 +4,8 @@ namespace TripGo;
 
 [DependsOn(
     typeof(TripGoApplicationModule),
-    typeof(TripGoDomainTestModule)
+    typeof(TripGoDomainTestModule),
+    typeof(TripGoTestBaseModule)
 )]
 public class TripGoApplicationTestModule : AbpModule
 {
