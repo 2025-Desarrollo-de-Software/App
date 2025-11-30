@@ -1,46 +1,101 @@
 <abp-page [title]="'::Menu:Home' | abpLocalization">
-  <div class="card">
-    <div class="card-header">{{ '::Welcome' | abpLocalization }}</div>
-    <div class="card-body">
-      <p>
-        {{ '::LongWelcomeMessage' | abpLocalization }}
-      </p>
-      <p *ngIf="!hasLoggedIn">
-        <a (click)="login()" class="btn btn-primary" role="button"
-          ><i class="fa fa-sign-in me-1" aria-hidden="true"></i>{{ 'AbpAccount::Login' | abpLocalization }}</a
-        >
-      </p>
-      <hr />
-      <p class="text-right"><a href="https://abp.io?ref=tmpl" target="_blank">abp.io</a></p>
+  
+  <!-- Sección de búsqueda de ciudades -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">Buscar Ciudades por Nombre</h5>
     </div>
-  </div>
-  <div class="card mt-5">
     <div class="card-body">
-      <div class="row">
-        <div class="col-md-auto text-center">
-          <img src="https://abp.io/assets/png/mastering-abp-framework.webp" style="max-width: 400px;"
-               class="w-100 mb-5 my-md-3">
-        </div>
-        <div class="col-md d-flex align-items-center">
-          <div class="pe-0 pe-md-4">
-            <small class="text-uppercase text-muted">The Official Guide</small>
-            <h2 class="mb-4">Mastering ABP Framework</h2>
-            <p class="mb-4">Written by the creator of the ABP Framework, this book will help you gain a complete
-              understanding of the framework and modern web application development techniques.</p>
-            <div class="mb-4">
-              <a href="https://www.amazon.com/gp/product/B097Z2DM8Q/ref=dbs_a_def_rwt_hsch_vapi_tkin_p1_i0"
-                 class="btn btn-success mb-1">
-                Buy on Amazon US
-              </a>
-              &nbsp;
-              <a href="https://www.packtpub.com/product/mastering-abp-framework/9781801079242"
-                 class="btn btn-primary mb-1">
-                Buy on PACKT
-              </a>
+      
+      <!-- Si NO está logueado -->
+      <div *ngIf="!hasLoggedIn" class="text-center py-4">
+        <p>Para buscar ciudades debes iniciar sesión</p>
+        <button (click)="login()" class="btn btn-primary">
+          <i class="fa fa-sign-in me-1" aria-hidden="true"></i>
+          {{ 'AbpAccount::Login' | abpLocalization }}
+        </button>
+      </div>
+
+      <!-- Si ESTÁ logueado -->
+      <div *ngIf="hasLoggedIn">
+        <!-- Campo de búsqueda -->
+        <div class="row g-2 mb-3">
+          <div class="col-md-8">
+            <input 
+              type="text" 
+              class="form-control" 
+              [(ngModel)]="searchText" 
+              placeholder="Ingresa el nombre de la ciudad..."
+              (keyup.enter)="search()"
+              [disabled]="loading">
+          </div>
+          <div class="col-md-4">
+            <div class="d-flex gap-2">
+              <button 
+                class="btn btn-primary flex-fill" 
+                (click)="search()" 
+                [disabled]="loading || !searchText || searchText.length < 3">
+                <i class="fa fa-search me-1" aria-hidden="true"></i>
+                Buscar
+              </button>
+              <button 
+                class="btn btn-outline-secondary" 
+                (click)="clearSearch()" 
+                [disabled]="loading">
+                <i class="fa fa-times me-1" aria-hidden="true"></i>
+                Limpiar
+              </button>
             </div>
           </div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="text-center py-3">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Buscando...</span>
+          </div>
+          <p class="mt-2 mb-0">Buscando ciudades...</p>
+        </div>
+
+
+<!-- RESULTADOS ENCONTRADOS -->
+<div *ngIf="!loading && cities.length > 0">
+  <h6 class="text-muted mb-3">Resultados encontrados: {{ cities.length }}</h6>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>País</th>
+          <th>Latitud</th>
+          <th>Longitud</th>
+          <th>Población</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let city of cities">
+          <td>{{ city.name || 'N/A' }}</td>
+          <td>{{ city.country || 'N/A' }}</td>
+          <td>{{ city.latitude || 'N/A' }}</td>
+          <td>{{ city.longitude || 'N/A' }}</td>
+          <td>{{ city.population || 'N/A' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+        <!-- Sin resultados -->
+        <div *ngIf="!loading && searchText && cities.length === 0" class="text-center py-4">
+          <i class="fa fa-search fa-2x text-muted mb-2" aria-hidden="true"></i>
+          <p class="text-muted">No se encontraron ciudades con "{{ searchText }}"</p>
+        </div>
+
+        <!-- Instrucciones -->
+        <div *ngIf="!loading && !searchText" class="text-center py-4 text-muted">
+          <i class="fa fa-city fa-2x mb-2" aria-hidden="true"></i>
+          <p>Ingresa al menos 3 caracteres para buscar ciudades</p>
         </div>
       </div>
     </div>
   </div>
-</abp-page>
