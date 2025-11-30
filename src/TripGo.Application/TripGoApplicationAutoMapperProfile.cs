@@ -1,4 +1,5 @@
 using AutoMapper;
+using TripGo.Ratings;
 
 namespace TripGo;
 
@@ -11,5 +12,6 @@ public class TripGoApplicationAutoMapperProfile : Profile
          * into multiple profile classes for a better organization. */
        CreateMap<Destinations.Destination, Destinations.DestinationDTO>();
        CreateMap<Destinations.CreateUpdateDestinationDto, Destinations.Destination>();
+       CreateMap<Rating, RatingDto>();
     }
 }

@@ -3,9 +3,12 @@ using Shouldly;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TripGo.EntityFrameworkCore;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.Modularity;
+using Volo.Abp.Uow;
 using Volo.Abp.Validation;
 using Xunit;
 
@@ -17,12 +20,49 @@ namespace TripGo.Destinations
     {
         private readonly IDestinationAppService _destinationAppService;
         private readonly IRepository<Destination, Guid> _destinationRepository;
+        private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private readonly IDbContextProvider<TripGoDbContext> _dbContextProvider;
 
         protected DestinationAppService_Tests()
         {
             _destinationAppService = GetRequiredService<IDestinationAppService>();
             _destinationRepository = GetRequiredService<IRepository<Destination, Guid>>();
+            _unitOfWorkManager = GetRequiredService<IUnitOfWorkManager>();
+            _dbContextProvider = GetRequiredService<IDbContextProvider<TripGoDbContext>>();
         }
+
+        [Fact]
+        public async Task CreateAsync_ShouldPersistDestinationInDatabase()
+        {
+            using (var uow = _unitOfWorkManager.Begin())
+            {
+                // Arrange
+                var input = new CreateUpdateDestinationDto
+                {
+                    Nombre = "Tokyo",
+                    Pais = "Japan",
+                    Poblacion = 13960000,
+                    Foto = "https://example.com/tokyo.jpg",
+                    Coordenadas = "35.6762,139.6503",
+                    CantidadBusquedas = 0
+                };
+
+                // Act
+                var result = await _destinationAppService.CreateAsync(input);
+
+                // Assert - Verificar en la base de datos directamente
+                var dbContext = await _dbContextProvider.GetDbContextAsync();
+                var savedDestination = await dbContext.Destinations.FindAsync(result.Id);
+
+                savedDestination.ShouldNotBeNull();
+                savedDestination.Nombre.ShouldBe(input.Nombre);
+                savedDestination.Pais.ShouldBe(input.Pais);
+                savedDestination.Poblacion.ShouldBe(input.Poblacion);
+
+                await uow.CompleteAsync();
+            }
+        }
+
 
         [Fact]
         public async Task Should_Get_List_Of_Destinations()
@@ -71,7 +111,7 @@ namespace TripGo.Destinations
                 CantidadBusquedas = 0
             };
             //Act & Assert
-           var exception = await Assert.ThrowsAsync<AbpValidationException>(async () =>
+            var exception = await Assert.ThrowsAsync<AbpValidationException>(async () =>
             {
                 await _destinationAppService.CreateAsync(createUpdateDestinationDto);
             });

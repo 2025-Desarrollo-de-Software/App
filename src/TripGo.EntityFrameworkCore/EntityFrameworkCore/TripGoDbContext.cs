@@ -15,12 +15,13 @@ using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using TripGo.Destinations;
+using TripGo.Ratings;
 
 namespace TripGo.EntityFrameworkCore;
 
 [ReplaceDbContext(typeof(IIdentityDbContext))]
 [ReplaceDbContext(typeof(ITenantManagementDbContext))]
-[ConnectionStringName("Default")]
+[ConnectionStringName("Default")] 
 public class TripGoDbContext :
     AbpDbContext<TripGoDbContext>,
     ITenantManagementDbContext,
@@ -28,6 +29,7 @@ public class TripGoDbContext :
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
     public DbSet<Destination> Destinations { get; set; }
+    public DbSet<Rating> Ratings { get; set; }
 
     #region Entities from the modules
 
@@ -79,7 +81,8 @@ public class TripGoDbContext :
         builder.ConfigureOpenIddict();
         builder.ConfigureTenantManagement();
         builder.ConfigureBlobStoring();
-        
+        //TP7
+
         /* Configure your own tables/entities inside here */
 
         //builder.Entity<YourEntity>(b =>
@@ -99,6 +102,20 @@ public class TripGoDbContext :
             b.Property(x => x.Poblacion).IsRequired();
             b.Property(x => x.Coordenadas).IsRequired().HasMaxLength(512);
             b.Property(x => x.CantidadBusquedas).IsRequired();
+        });
+
+        builder.Entity<Rating>(b =>
+        {
+            b.ToTable("Ratings");
+            b.HasKey(x => x.Id);
+            b.HasIndex(x => x.UserId);
+            b.HasIndex(x => x.DestinationId);
+            // Validaciones
+            b.Property(x => x.Score)
+                .IsRequired()
+                .HasMaxLength(1); // 1-5 estrellas
+            b.Property(x => x.Comment)
+                .HasMaxLength(500);
         });
     }
 }

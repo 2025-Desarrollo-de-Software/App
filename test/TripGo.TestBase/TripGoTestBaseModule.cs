@@ -31,7 +31,7 @@ public class TripGoTestBaseModule : AbpModule
     {
         SeedTestData(context);
     }
-
+    
     private static void SeedTestData(ApplicationInitializationContext context)
     {
         AsyncHelper.RunSync(async () =>
@@ -44,4 +44,5 @@ public class TripGoTestBaseModule : AbpModule
             }
         });
     }
+ 
 }
